@@ -1,64 +1,49 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log"
-	"net/http"
+	"net"
 	"os"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"toDoBackEnd/di"
+	"toDoBackEnd/di/container"
+	l "toDoBackEnd/infra/log"
+	"toDoBackEnd/proto/proto-gen/pb"
 )
 
-// Logger型を定義します。
-type Logger struct{}
-
-// ログを記録するメソッド
-func (l *Logger) Log(message string) {
-	log.Println(message)
-}
-
-// ハンドラーのファクトリ関数。Loggerを受け取り、http.HandlerFuncを返します。
-func NewSampleHandler(logger *Logger) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		logger.Log("Sample handler called")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Hello, DI!"))
-	}
-}
-
-func T(logger *Logger) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		logger.Log("test")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Hello, DI!"))
-	}
-}
+const port = 9000
 func main() {
-	r := chi.NewRouter()
-
-	// Loggerのインスタンスを作成します。
-	logger := &Logger{}
-
-	// ルートの設定
-	// ミドルウェアの設定
-	r.Use(middleware.RealIP)
-	r.Use(middleware.Logger)
-
-	// r.Get("/", NewSampleHandler(logger))
-	r.Group(func(r chi.Router) {
-		r.Get("/", NewSampleHandler(logger))
-
-		r.Get("/test", T(logger))
-	})
-
-	// ポートの設定とサーバーの起動
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "9000" // デフォルトのポート
-		log.Printf("Defaulting to port %s", port)
+	ctx := context.Background()
+	logger, err := l.New("DEBUG")
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] Failed to setup logger: %s\n", err)
+		os.Exit(1)
+	}
+	if err := container.InitializeContainer(ctx, logger); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] Failed to initialize container: %s\n", err)
+		os.Exit(1)
 	}
 
-	log.Printf("Listening on port %s", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), r))
+	opts := []grpc.ServerOption{}
+
+	s := grpc.NewServer(opts...)
+
+	pb.RegisterHelloServiceServer(s, di.NewHelloServer())
+
+	reflection.Register(s)
+
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] failed to listen: %v", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Starting gRPC server on %d\n", port)
+	if err := s.Serve(lis); err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] failed to serve: %v", err)
+		os.Exit(1)
+	}
 }
