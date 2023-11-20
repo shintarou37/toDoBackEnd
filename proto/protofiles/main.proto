@@ -7,7 +7,11 @@ option go_package = "./pb";
 import "google/api/annotations.proto";
 
 service HelloService {
-    rpc SayHello (HelloRequest) returns (HelloResponse);
+    rpc SayHello (HelloRequest) returns (HelloResponse) {
+      option (google.api.http) = {
+        get : "/hello"
+      };
+    };
     rpc SayHello2(HelloRequest) returns (HelloResponse) {
       option (google.api.http) = {
         post : "/hello2"

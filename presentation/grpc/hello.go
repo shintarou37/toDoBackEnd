@@ -8,7 +8,7 @@ import (
 )
 
 type HelloService struct {
-	logger                             *zap.Logger
+	logger *zap.Logger
 	pb.UnimplementedHelloServiceServer
 }
 
@@ -21,9 +21,13 @@ func NewHelloServer(
 }
 
 func (s *HelloService) SayHello(context.Context, *pb.HelloRequest) (*pb.HelloResponse, error) {
-	return &pb.HelloResponse{}, nil
+	return &pb.HelloResponse{
+		Reply: "Hello",
+	}, nil
 }
 
 func (s *HelloService) SayHello2(context.Context, *pb.HelloRequest) (*pb.HelloResponse, error) {
-	return &pb.HelloResponse{}, nil
+	return &pb.HelloResponse{
+		Reply: "Hello2",
+	}, nil
 }
