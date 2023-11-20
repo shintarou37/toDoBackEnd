@@ -8,19 +8,22 @@ package di
 
 import (
 	"github.com/google/wire"
+	"toDoBackEnd/application"
 	"toDoBackEnd/di/container"
+	"toDoBackEnd/infra/persistence"
 	"toDoBackEnd/presentation/grpc"
 	"toDoBackEnd/proto/proto-gen/pb"
 )
 
 // Injectors from wire.go:
 
-func NewHelloServer() pb.HelloServiceServer {
+func NewHelloServer() pb.UserServiceServer {
 	logger := container.Logger()
-	helloServiceServer := grpc.NewHelloServer(logger)
-	return helloServiceServer
+	userService := application.NewUserService(logger)
+	userServiceServer := grpc.NewHelloServer(userService, logger)
+	return userServiceServer
 }
 
 // wire.go:
 
-var wireSet = wire.NewSet(container.WireSet, grpc.WireSet)
+var wireSet = wire.NewSet(container.WireSet, grpc.WireSet, application.WireSet, persistence.WireSet)

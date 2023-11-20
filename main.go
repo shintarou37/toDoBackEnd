@@ -56,7 +56,7 @@ func startGRPCServer(port int) error {
 
 	s := grpc.NewServer(opts...)
 
-	pb.RegisterHelloServiceServer(s, di.NewHelloServer())
+	pb.RegisterUserServiceServer(s, di.NewHelloServer())
 
 	reflection.Register(s)
 
@@ -66,7 +66,7 @@ func startGRPCServer(port int) error {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Starting gRPC server")
+	fmt.Printf("[INFO] Starting gRPC server")
 	if err := s.Serve(lis); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] failed to serve: %v", err)
 		os.Exit(1)
@@ -120,7 +120,7 @@ func registerServiceHandlers(ctx context.Context, router *chi.Mux) error {
 	mux := runtime.NewServeMux(muxOptions...)
 
 	registerFuncs := []func(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error{
-		pb.RegisterHelloServiceHandler,
+		pb.RegisterUserServiceHandler,
 	}
 
 	for _, registerFunc := range registerFuncs {

@@ -18,15 +18,15 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := pb.NewHelloServiceClient(conn)
+	client := pb.NewUserServiceClient(conn)
 
 	// SayHelloメソッドを呼び出し
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	resp, err := client.SayHello(ctx, &pb.HelloRequest{Greeting: "Hello"})
+	resp, err := client.Get(ctx, &pb.UserGetRequest{Id: "test"})
 	if err != nil {
 		log.Fatalf("Could not greet: %v", err)
 	}
-	log.Printf("Greeting", resp.Reply)
+	log.Printf("user name: ", resp.Name)
 }

@@ -5,7 +5,9 @@ package di
 
 import (
 	"github.com/google/wire"
+	"toDoBackEnd/application"
 	"toDoBackEnd/di/container"
+	"toDoBackEnd/infra/persistence"
 	"toDoBackEnd/presentation/grpc"
 	pb "toDoBackEnd/proto/proto-gen/pb"
 )
@@ -13,9 +15,11 @@ import (
 var wireSet = wire.NewSet(
 	container.WireSet,
 	grpc.WireSet,
+	application.WireSet,
+	persistence.WireSet,
 )
 
-func NewHelloServer() pb.HelloServiceServer {
+func NewHelloServer() pb.UserServiceServer {
 	wire.Build(wireSet)
 	return nil
 }
