@@ -66,13 +66,11 @@ func startGRPCServer(port int) error {
 		os.Exit(1)
 	}
 
-	fmt.Printf("[INFO] Starting gRPC server")
-	if err := s.Serve(lis); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "[ERROR] failed to serve: %v", err)
-		os.Exit(1)
-	}
+	fsCli := container.FirestoreClient()
+	defer fsCli.Close()
 
-	return nil
+	fmt.Printf("[INFO] Starting gRPC server")
+	return s.Serve(lis)
 }
 
 func startHTTPServer() error {

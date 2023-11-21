@@ -18,8 +18,10 @@ import (
 // Injectors from wire.go:
 
 func NewHelloServer() pb.UserServiceServer {
+	client := container.FirestoreClient()
 	logger := container.Logger()
-	userService := application.NewUserService(logger)
+	repository := persistence.NewUserRepository(client, logger)
+	userService := application.NewUserService(repository, logger)
 	userServiceServer := grpc.NewHelloServer(userService, logger)
 	return userServiceServer
 }

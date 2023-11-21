@@ -18,7 +18,7 @@ type userRepository struct {
 func NewUserRepository(
 	fsClient *firestore.Client,
 	logger *zap.Logger,
-) user.UserRepository {
+) user.Repository {
 	return &userRepository{
 		fsClient: fsClient,
 		logger:   logger.Named("user/userRepository"),

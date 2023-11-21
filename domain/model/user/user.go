@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type UserRepository interface {
+type Repository interface {
 	FindOne(ctx context.Context, id string) (*User, error)
 }
 

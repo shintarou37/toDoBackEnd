@@ -4,27 +4,34 @@ import (
 	"context"
 
 	"go.uber.org/zap"
-	"toDoBackEnd/domain/model/user"
+	userModel "toDoBackEnd/domain/model/user"
 )
 
 type UserService interface {
-	Get(ctx context.Context, id string) (*user.User, error)
+	Get(ctx context.Context, id string) (*userModel.User, error)
 }
 
 type userService struct {
-	logger *zap.Logger
+	userRepository userModel.Repository
+	logger         *zap.Logger
 }
 
 func NewUserService(
+	userRepository userModel.Repository,
 	logger *zap.Logger,
 ) UserService {
 	return &userService{
-		logger: logger.Named("UserService"),
+		userRepository: userRepository,
+		logger:         logger.Named("UserService"),
 	}
 }
 
-func (s *userService) Get(ctx context.Context, id string) (*user.User, error) {
-	return &user.User{
-		Name: "test user",
+func (u *userService) Get(ctx context.Context, id string) (*userModel.User, error) {
+	user, err := u.userRepository.FindOne(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return &userModel.User{
+		Name: user.Name,
 	}, nil
 }
