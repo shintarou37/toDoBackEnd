@@ -19,7 +19,7 @@ var wireSet = wire.NewSet(
 	persistence.WireSet,
 )
 
-func NewHelloServer() pb.UserServiceServer {
+func NewUserServer() pb.UserServiceServer {
 	wire.Build(wireSet)
 	return nil
 }

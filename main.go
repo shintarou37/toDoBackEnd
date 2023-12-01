@@ -3,6 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
+	"os"
+	"toDoBackEnd/di"
+	"toDoBackEnd/di/container"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -10,10 +15,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
-	"net"
-	"os"
-	"toDoBackEnd/di"
-	"toDoBackEnd/di/container"
 
 	"net/http"
 	infraLog "toDoBackEnd/infra/log"
@@ -56,7 +57,7 @@ func startGRPCServer(port int) error {
 
 	s := grpc.NewServer(opts...)
 
-	pb.RegisterUserServiceServer(s, di.NewHelloServer())
+	pb.RegisterUserServiceServer(s, di.NewUserServer())
 
 	reflection.Register(s)
 

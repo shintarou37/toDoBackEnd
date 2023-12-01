@@ -9,7 +9,26 @@ import "google/api/annotations.proto";
 service UserService {
     rpc Get (UserGetRequest) returns (UserGetResponse) {
       option (google.api.http) = {
-        get : "/user/get"
+        post : "/user/get"
+        body : "*"
+      };
+    };
+    rpc Create (UserCreateRequest) returns (UserCreateResponse) {
+      option (google.api.http) = {
+        post : "/user/create"
+        body : "*"
+      };
+    };
+    rpc Update (UserUpdateRequest) returns (UserUpdateResponse) {
+      option (google.api.http) = {
+        post : "/user/update"
+        body : "*"
+      };
+    };
+    rpc Login (UserLoginRequest) returns (UserLoginResponse) {
+      option (google.api.http) = {
+        post : "/user/login"
+        body : "*"
       };
     };
   }
@@ -20,4 +39,37 @@ message UserGetRequest {
 
 message UserGetResponse {
   string name = 1;
+  string email = 2;
+  string id = 3;
 }
+
+message UserCreateRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message UserCreateResponse {
+  string name = 1;
+  string email = 2;
+  string id = 3;
+}
+
+message UserUpdateRequest {
+  string name = 1;
+  string email = 2;
+  string id = 3;
+}
+
+message UserUpdateResponse {
+  string name = 1;
+  string email = 2;
+  string id = 3;
+}
+
+message UserLoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UserLoginResponse {}

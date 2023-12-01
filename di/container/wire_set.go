@@ -7,5 +7,4 @@ import (
 var WireSet = wire.NewSet(
 	FirestoreClient,
 	Logger,
-	Auth,
 )

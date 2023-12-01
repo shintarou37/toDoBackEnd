@@ -5,5 +5,5 @@ import (
 )
 
 var WireSet = wire.NewSet(
-	NewHelloServer,
+	NewUserServer,
 )
