@@ -7,7 +7,9 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
+	"regexp"
 	userModel "toDoBackEnd/domain/model/user"
+	"unicode/utf8"
 )
 
 type UserService interface {
@@ -43,6 +45,9 @@ func (u *userService) Get(ctx context.Context, id string) (*userModel.User, erro
 }
 
 func (u *userService) Create(ctx context.Context, name, email, password string) (*userModel.User, error) {
+	if err := u.validateCreateAndUpdate(email, name, password, false); err != nil {
+		return nil, err
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -59,6 +64,9 @@ func (u *userService) Create(ctx context.Context, name, email, password string) 
 }
 
 func (u *userService) Update(ctx context.Context, id, name, email string) (*userModel.User, error) {
+	if err := u.validateCreateAndUpdate(email, name, "", false); err != nil {
+		return nil, err
+	}
 	user, err := u.userRepository.Update(ctx, &userModel.User{
 		ID:    id,
 		Name:  name,
@@ -84,4 +92,23 @@ func (u *userService) Login(ctx context.Context, email, password string) error {
 		return errors.Wrap(err, "error comparing password")
 	}
 	return nil
+}
+
+func (u *userService) validateCreateAndUpdate(name, email, password string, useCreate bool) error {
+	if name == "" || utf8.RuneCountInString(name) > 20 {
+		return errors.New("invalid name")
+	}
+	passwordLength := utf8.RuneCountInString(password)
+	if useCreate && (password == "" || passwordLength < 8 && passwordLength > 16) {
+		return errors.New("invalid password")
+	}
+	if !u.isValidEmail(email) {
+		fmt.Println(email, "is not a valid email address")
+	}
+	return nil
+}
+
+func (u *userService) isValidEmail(email string) bool {
+	var emailRegex = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return emailRegex.MatchString(email)
 }
