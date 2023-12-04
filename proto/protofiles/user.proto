@@ -7,35 +7,33 @@ option go_package = "./pb";
 import "google/api/annotations.proto";
 
 service UserService {
-    rpc Get (UserGetRequest) returns (UserGetResponse) {
-      option (google.api.http) = {
-        post : "/user/get"
-        body : "*"
-      };
+  rpc Get(UserGetRequest) returns (UserGetResponse) {
+    option (google.api.http) = {
+      post : "/user/get"
+      body : "*"
     };
-    rpc Create (UserCreateRequest) returns (UserCreateResponse) {
-      option (google.api.http) = {
-        post : "/user/create"
-        body : "*"
-      };
+  };
+  rpc Create(UserCreateRequest) returns (UserCreateResponse) {
+    option (google.api.http) = {
+      post : "/user/create"
+      body : "*"
     };
-    rpc Update (UserUpdateRequest) returns (UserUpdateResponse) {
-      option (google.api.http) = {
-        post : "/user/update"
-        body : "*"
-      };
+  };
+  rpc Update(UserUpdateRequest) returns (UserUpdateResponse) {
+    option (google.api.http) = {
+      post : "/user/update"
+      body : "*"
     };
-    rpc Login (UserLoginRequest) returns (UserLoginResponse) {
-      option (google.api.http) = {
-        post : "/user/login"
-        body : "*"
-      };
+  };
+  rpc Login(UserLoginRequest) returns (UserLoginResponse) {
+    option (google.api.http) = {
+      post : "/user/login"
+      body : "*"
     };
-  }
-  
-message UserGetRequest {
-  string id = 1;
+  };
 }
+
+message UserGetRequest { string id = 1; }
 
 message UserGetResponse {
   string name = 1;
