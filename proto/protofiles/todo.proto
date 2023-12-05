@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./pb";
+
+import "google/api/annotations.proto";
+
+service TodoService {
+  rpc Get(TodoGetRequest) returns (TodoGetResponse) {
+    option (google.api.http) = {
+      post : "/todo/get"
+      body : "*"
+    };
+  };
+  rpc List(TodoListRequest) returns (TodoListResponse) {
+    option (google.api.http) = {
+      post : "/todo/list"
+      body : "*"
+    };
+  };
+  rpc Create(TodoCreateRequest) returns (TodoCreateResponse) {
+    option (google.api.http) = {
+      post : "/todo/create"
+      body : "*"
+    };
+  };
+  rpc Update(TodoUpdateRequest) returns (TodoUpdateResponse) {
+    option (google.api.http) = {
+      post : "/todo/update"
+      body : "*"
+    };
+  };
+}
+
+message Todo {
+  string title = 1;
+  string context = 2;
+  int32 priority = 3;
+}
+
+message TodoListRequest { string user_id = 1; }
+
+message TodoListResponse { repeated Todo todo = 1; }
+
+message TodoGetRequest { string todo_id = 1; }
+
+message TodoGetResponse { Todo todo = 1; }
+message TodoCreateRequest { Todo todo = 1; string user_id = 2;}
+
+message TodoCreateResponse {
+  Todo todo = 1;
+}
+
+message TodoUpdateRequest {
+  Todo todo = 1;
+  string todo_id = 2;
+}
+
+message TodoUpdateResponse { Todo todo = 1; }

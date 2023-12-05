@@ -6,4 +6,5 @@ import (
 
 var WireSet = wire.NewSet(
 	NewUserService,
+	NewTodoService,
 )

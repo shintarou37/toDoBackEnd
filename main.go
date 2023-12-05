@@ -58,6 +58,7 @@ func startGRPCServer(port int) error {
 	s := grpc.NewServer(opts...)
 
 	pb.RegisterUserServiceServer(s, di.NewUserServer())
+	pb.RegisterTodoServiceServer(s, di.NewTodoServer())
 
 	reflection.Register(s)
 
@@ -120,6 +121,7 @@ func registerServiceHandlers(ctx context.Context, router *chi.Mux) error {
 
 	registerFuncs := []func(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error{
 		pb.RegisterUserServiceHandler,
+		pb.RegisterTodoServiceHandler,
 	}
 
 	for _, registerFunc := range registerFuncs {

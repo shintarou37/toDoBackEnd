@@ -23,3 +23,8 @@ func NewUserServer() pb.UserServiceServer {
 	wire.Build(wireSet)
 	return nil
 }
+
+func NewTodoServer() pb.TodoServiceServer {
+	wire.Build(wireSet)
+	return nil
+}

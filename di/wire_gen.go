@@ -26,6 +26,15 @@ func NewUserServer() pb.UserServiceServer {
 	return userServiceServer
 }
 
+func NewTodoServer() pb.TodoServiceServer {
+	client := container.FirestoreClient()
+	logger := container.Logger()
+	repository := persistence.NewTodoRepository(client, logger)
+	todoService := application.NewTodoService(repository, logger)
+	todoServiceServer := grpc.NewTodoServer(todoService, logger)
+	return todoServiceServer
+}
+
 // wire.go:
 
 var wireSet = wire.NewSet(container.WireSet, grpc.WireSet, application.WireSet, persistence.WireSet)
