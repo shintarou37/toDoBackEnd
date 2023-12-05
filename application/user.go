@@ -39,8 +39,6 @@ func (u *userService) Get(ctx context.Context, id string) (*userModel.User, erro
 	if err != nil {
 		return nil, err
 	}
-	a := bcrypt.CompareHashAndPassword(user.Password, []byte("Password"))
-	fmt.Println(a)
 	return user, nil
 }
 
