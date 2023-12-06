@@ -56,7 +56,7 @@ func (u *userService) Create(ctx context.Context, name, email, password string) 
 		Password: hashedPassword,
 	})
 	if err != nil {
-		u.logger.Error(fmt.Sprintf("failure create user", zap.String("name", name) , zap.String("email", email)))
+		u.logger.Error(fmt.Sprintf("failure create user", zap.String("name", name), zap.String("email", email)))
 		return nil, err
 	}
 	return user, nil
@@ -104,7 +104,7 @@ func (u *userService) validateCreateAndUpdate(name, email, password string, useC
 		return errors.New("invalid password")
 	}
 	if !u.isValidEmail(email) {
-		u.logger.Info("invalid email: ",  zap.String("email", email))
+		u.logger.Info("invalid email: ", zap.String("email", email))
 		return errors.New("invalid email")
 	}
 	return nil

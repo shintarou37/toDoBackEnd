@@ -10,6 +10,9 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpcZap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpcValidator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"
 	"google.golang.org/grpc"
@@ -18,6 +21,8 @@ import (
 
 	"net/http"
 	infraLog "toDoBackEnd/infra/log"
+	"toDoBackEnd/presentation/interceptor"
+
 	"toDoBackEnd/proto/proto-gen/pb"
 )
 
@@ -53,7 +58,15 @@ func main() {
 }
 
 func startGRPCServer(port int) error {
-	opts := []grpc.ServerOption{}
+	logger := container.Logger()
+
+	opts := []grpc.ServerOption{
+		grpcMiddleware.WithUnaryServerChain(
+			grpcZap.UnaryServerInterceptor(logger, grpcZap.WithLevels(infraLog.GRPCCodeToLevel)),
+			grpcValidator.UnaryServerInterceptor(),
+			interceptor.ClientInfoInterceptor(logger.Named("ClientInfoInterceptor")),
+		),
+	}
 
 	s := grpc.NewServer(opts...)
 

@@ -6,6 +6,7 @@ import (
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/codes"
 )
 
 // New creates a new zap logger
@@ -37,4 +38,8 @@ func logLevel(level string) (zapcore.Level, error) {
 		return l, errors.New("invalid log level")
 	}
 	return l, nil
+}
+
+func GRPCCodeToLevel(code codes.Code) zapcore.Level {
+	return zap.InfoLevel
 }
